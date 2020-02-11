@@ -61,9 +61,30 @@ public class DataUtilitiesTest {
 		}});
 	}
 	
+	//testCalculateColumnTotal
+	
 	@Test
-	public void testCalculateColumnTotal() {
-		fail("Not yet implemented");
+	public void testCalculateColumnTotalZeroV2D() {
+		double result = DataUtilities.calculateColumnTotal(ZeroV2D, 0);
+		assertEquals(0, result, .0000000001d);
+	}
+		
+	@Test
+	public void testCalculateColumnTotalOneV2D() {
+		double result2 = DataUtilities.calculateColumnTotal(OneV2D, 0);
+		assertEquals(5.5, result2, .0000000001d);
+	}
+		
+	@Test
+	public void testCalculateColumnTotalThreeV2D() {
+		double result2 = DataUtilities.calculateColumnTotal(ThreeV2D, 0);
+		assertEquals(9.5, result2, .0000000001d);
+			
+		double result3 = DataUtilities.calculateColumnTotal(ThreeV2D, 1);
+		assertEquals(17.1, result3, .0000000001d);
+			
+		double result4 = DataUtilities.calculateColumnTotal(ThreeV2D, 2);
+		assertEquals(14.2, result4, .0000000001d);
 	}
 
 	@Test
