@@ -2,12 +2,16 @@ package org.jfree.data.test;
 
 import static org.junit.Assert.*;
 
+import java.security.InvalidParameterException;
+
 import org.jfree.data.DataUtilities;
 import org.jfree.data.Values2D;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Test;
 import org.junit.*;
+import static org.hamcrest.Matchers.*;
+
 
 public class DataUtilitiesTest {
 	Mockery mockingContext = new Mockery();
@@ -28,6 +32,16 @@ public class DataUtilitiesTest {
 		    will(returnValue(0));
 		    
 		    // setup 1x1 Values2D as [(5.5)]
+		    // if index is less than 0 or greater than 0, return IndexOutOfBoundsException
+		    allowing(OneV2D).getValue(with(lessThan(0)), with(any(Integer.class)));
+		    will(throwException(new IndexOutOfBoundsException())); //return exception
+		    allowing(OneV2D).getValue(with(any(Integer.class)), with(lessThan(0)));
+		    will(throwException(new IndexOutOfBoundsException())); //return exception
+		    allowing(OneV2D).getValue(with(greaterThan(0)), with(any(Integer.class)));
+		    will(throwException(new IndexOutOfBoundsException())); //return exception
+		    allowing(OneV2D).getValue(with(any(Integer.class)), with(greaterThan(0)));
+		    will(throwException(new IndexOutOfBoundsException())); 
+		    
 		    allowing(OneV2D).getRowCount();
 		    will(returnValue(1));
 		    allowing(OneV2D).getColumnCount();
@@ -40,6 +54,17 @@ public class DataUtilitiesTest {
 		    will(returnValue(3));
 		    allowing(ThreeV2D).getColumnCount();
 		    will(returnValue(3));
+		    
+		    // if index is less than 0 or greater than 2, return IndexOutOfBoundsException
+		    allowing(ThreeV2D).getValue(with(lessThan(0)), with(any(Integer.class)));
+		    will(throwException(new InvalidParameterException())); //return exception
+		    allowing(ThreeV2D).getValue(with(any(Integer.class)), with(lessThan(0)));
+		    will(throwException(new InvalidParameterException())); //return exception
+		    allowing(ThreeV2D).getValue(with(greaterThan(2)), with(any(Integer.class)));
+		    will(throwException(new InvalidParameterException())); //return exception
+		    allowing(ThreeV2D).getValue(with(any(Integer.class)), with(greaterThan(2)));
+		    will(throwException(new InvalidParameterException())); //return exception
+		    
 		    allowing(ThreeV2D).getValue(0, 0);
 		    will(returnValue(5.3));
 		    allowing(ThreeV2D).getValue(0, 1);
@@ -68,11 +93,25 @@ public class DataUtilitiesTest {
 		double result = DataUtilities.calculateColumnTotal(ZeroV2D, 0);
 		assertEquals(0, result, .0000000001d);
 	}
-		
+	
 	@Test
 	public void testCalculateColumnTotalOneV2D() {
 		double result2 = DataUtilities.calculateColumnTotal(OneV2D, 0);
 		assertEquals(5.5, result2, .0000000001d);
+	}
+	
+	@Test (expected = InvalidParameterException.class)
+	public void testCalculateColumnTotalThreeV2D_BLB() {
+		double result1 = DataUtilities.calculateColumnTotal(ThreeV2D, -1);
+		System.out.println(result1);
+		assertEquals(0, result1, .000000001d);
+	}
+	
+	@Test (expected = InvalidParameterException.class)
+	public void testCalculateColumnTotalThreeV2D_AUB() {
+		double result1 = DataUtilities.calculateColumnTotal(ThreeV2D, 3);
+		System.out.println(result1);
+		assertEquals(0, result1, .000000001d);
 	}
 		
 	@Test
