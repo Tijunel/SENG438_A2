@@ -87,9 +87,30 @@ public class DataUtilitiesTest {
 		assertEquals(14.2, result4, .0000000001d);
 	}
 
+	//testCalculateRowTotal
+	
 	@Test
-	public void testCalculateRowTotal() {
-		fail("Not yet implemented");
+	public void testCalculateRowTotalZeroV2D() {
+		double result = DataUtilities.calculateRowTotal(ZeroV2D, 0);
+		assertEquals(0, result, .0000000001d);
+	}
+	
+	@Test
+	public void testCalculateRowTotalOneV2D() {
+		double result2 = DataUtilities.calculateRowTotal(OneV2D, 0);
+		assertEquals(5.5, result2, .0000000001d);
+	}
+	
+	@Test
+	public void testCalculateRowTotalThreeV2D() {
+		double result2 = DataUtilities.calculateRowTotal(ThreeV2D, 0);
+		assertEquals(12.9, result2, .0000000001d);
+		
+		double result3 = DataUtilities.calculateRowTotal(ThreeV2D, 1);
+		assertEquals(13.5, result3, .0000000001d);
+		
+		double result4 = DataUtilities.calculateRowTotal(ThreeV2D, 2);
+		assertEquals(14.4, result4, .0000000001d);
 	}
 	
 	@Test
