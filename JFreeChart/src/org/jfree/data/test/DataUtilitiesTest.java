@@ -140,6 +140,20 @@ public class DataUtilitiesTest {
 		assertEquals(5.5, result2, .0000000001d);
 	}
 	
+	@Test (expected = InvalidParameterException.class)
+	public void testCalculateRowTotalThreeV2D_BLB() {
+		double result1 = DataUtilities.calculateRowTotal(ThreeV2D, -1);
+		System.out.println(result1);
+		assertEquals(0, result1, .000000001d);
+	}
+	
+	@Test (expected = InvalidParameterException.class)
+	public void testCalculateRowTotalThreeV2D_AUB() {
+		double result1 = DataUtilities.calculateRowTotal(ThreeV2D, 3);
+		System.out.println(result1);
+		assertEquals(0, result1, .000000001d);
+	}
+	
 	@Test
 	public void testCalculateRowTotalThreeV2D() {
 		double result2 = DataUtilities.calculateRowTotal(ThreeV2D, 0);
