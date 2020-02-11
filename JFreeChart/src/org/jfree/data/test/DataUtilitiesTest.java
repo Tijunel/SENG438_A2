@@ -86,7 +86,7 @@ public class DataUtilitiesTest {
 		}});
 	}
 	
-	//testCalculateColumnTotal
+	// testCalculateColumnTotal
 	
 	@Test
 	public void testCalculateColumnTotalZeroV2D() {
@@ -168,25 +168,36 @@ public class DataUtilitiesTest {
 	
 	//testCreateNumberArray
 	
+	@Test (expected = IllegalArgumentException.class)
+	public void testCreateNumberArrayZero(){
+		double[] testArr = null;
+		Number[] resultArr = DataUtilities.createNumberArray(testArr);
+		for(Number n: resultArr) {
+			System.out.println(n);
+		}
+	}
+	
 	@Test
 	public void testCreateNumberArray() {
-		Number[] testArr = new Number[4];
-		testArr[0] = 1.0;
-		testArr[1] = 2.0;
-		testArr[2] = 3.0;
-		testArr[3] = 3.0;
+		Number[] expectedArr = new Number[4];
+		expectedArr[0] = 1.0;
+		expectedArr[1] = 2.0;
+		expectedArr[2] = 3.0;
+		expectedArr[3] = 4.0;
 		
 		double[] doubleArr = new double[4];
 		doubleArr[0] = 1.0;
 		doubleArr[1] = 2.0;
 		doubleArr[2] = 3.0;
-		doubleArr[3] = 3.0;
+		doubleArr[3] = 4.0;
 		
-		Number[] resultArr = DataUtilities.createNumberArray(doubleArr);	
-		assertArrayEquals(testArr, resultArr);
+//		// Debugging print statements
 //		for(Number n: resultArr) {
 //			System.out.println(n);
 //		}
+		
+		Number[] resultArr = DataUtilities.createNumberArray(doubleArr);	
+		assertArrayEquals(expectedArr, resultArr);
 	}
 
 	@Test
