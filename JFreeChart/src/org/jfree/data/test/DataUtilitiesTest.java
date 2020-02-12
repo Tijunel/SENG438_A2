@@ -201,10 +201,38 @@ public class DataUtilitiesTest {
 	}
 
 	@Test
-	public void testCreateNumberArray2D() {
-		fail("Not yet implemented");
+	public void testCreateNumberArray2D_Populated2DArray() {
+		Number [][] expectedArr = new Number [2][3];
+		double [][] doubleArr = new double [2][3];
+		
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 3; j++) {
+				expectedArr[i][j] = i + j; 
+				doubleArr[i][j] = i + j;
+			}
+		}
+		Number [][] resultArr = DataUtilities.createNumberArray2D(doubleArr);
+		
+		for (int i = 0; i < 2; i++)
+			assertArrayEquals(expectedArr[i], resultArr[i]);		
 	}
-
+	
+	@Test
+	public void testCreateNumberArray2D_empty2DArray() {
+		Number [][] expectedArr = new Number [0][0];
+		double [][] doubleArr = new double [0][0];
+		
+		Number [][] resultArr = DataUtilities.createNumberArray2D(doubleArr);
+		
+		assertArrayEquals(expectedArr[0], resultArr[0]);	
+	}
+	
+	@Test (expected = InvalidParameterException.class)
+	public void testCreateNumberArray2D_invalidInput() throws InvalidParameterException{
+			DataUtilities.createNumberArray2D(null);
+			fail("Exception not thrown. ");
+	}
+	
 	@Test
 	public void testGetCumulativePercentages() {
 		fail("Not yet implemented");
