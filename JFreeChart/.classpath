@@ -42,5 +42,6 @@
 	<classpathentry kind="lib" path="/Users/justintijunelis/Downloads/Assignment 2-artifact/JFreeChart/lib/jMock/jmock-junit4-2.5.1.jar"/>
 	<classpathentry kind="lib" path="/Users/justintijunelis/Downloads/Assignment 2-artifact/JFreeChart/lib/jMock/jmock-legacy-2.5.1.jar"/>
 	<classpathentry kind="lib" path="/Users/justintijunelis/Downloads/Assignment 2-artifact/JFreeChart/lib/jMock/jmock-script-2.5.1.jar"/>
+
 	<classpathentry kind="output" path="bin"/>
 </classpath>
