@@ -3,8 +3,14 @@ package org.jfree.data.test;
 import static org.junit.Assert.*;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.jfree.data.DataUtilities;
+import org.jfree.data.DefaultKeyedValues;
+import org.jfree.data.KeyedValue;
+import org.jfree.data.KeyedValues;
 import org.jfree.data.Values2D;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -21,6 +27,12 @@ public class DataUtilitiesTest {
 	final Values2D OneV2D = mockingContext.mock(Values2D.class, "OneV2D");
 	// mocks a 4x4 Values2D [(5.3, 4.3, 3.3), (1.8, 7.5, 4.2), (2.4, 5.3, 6.7)]
 	final Values2D ThreeV2D = mockingContext.mock(Values2D.class, "ThreeV2D");
+	
+	Mockery mockingKeyValues = new Mockery();
+	//mocks a KeyedValues of [(0,5),(1, 9),(2, 2)]
+	final KeyedValues keyedValues = mockingKeyValues.mock(KeyedValues.class, "keyedValue");
+	
+	final KeyedValues cumulative = mockingKeyValues.mock(KeyedValues.class, "cumulative");
 	
 	@Before
 	public void setUp() throws Exception{
@@ -83,6 +95,57 @@ public class DataUtilitiesTest {
 		    will(returnValue(5.3));
 		    allowing(ThreeV2D).getValue(2, 2);
 		    will(returnValue(6.7));
+		}});
+		
+		mockingKeyValues.checking(new Expectations() {{
+			allowing(keyedValues).getKey(0);
+		    will(returnValue(0));
+		    allowing(keyedValues).getKey(1);
+		    will(returnValue(1));
+		    allowing(keyedValues).getKey(2);
+		    will(returnValue(2));
+		    
+		    allowing(keyedValues).getKeys();
+		    List<Integer> keys = new ArrayList<Integer>(Arrays.asList(0, 1, 2));
+ 		    will(returnEnumeration(keys));
+ 		    
+ 		    allowing(keyedValues).getIndex(0);
+		    will(returnValue(0));
+		    allowing(keyedValues).getIndex(1);
+		    will(returnValue(1));
+		    allowing(keyedValues).getIndex(2);
+		    will(returnValue(2));
+		    
+		    allowing(keyedValues).getValue(0);
+		    will(returnValue(5));
+		    allowing(keyedValues).getValue(1);
+		    will(returnValue(9));
+		    allowing(keyedValues).getValue(2);
+		    will(returnValue(2));
+		    
+		    allowing(cumulative).getKey(0);
+		    will(returnValue(0));
+		    allowing(cumulative).getKey(1);
+		    will(returnValue(1));
+		    allowing(cumulative).getKey(2);
+		    will(returnValue(2));
+		    
+		    allowing(cumulative).getKeys();
+ 		    will(returnEnumeration(keys));
+ 		    
+ 		    allowing(cumulative).getIndex(0);
+		    will(returnValue(0));
+		    allowing(cumulative).getIndex(1);
+		    will(returnValue(1));
+		    allowing(cumulative).getIndex(2);
+		    will(returnValue(2));
+		    
+		    allowing(cumulative).getValue(0);
+		    will(returnValue(0.3125));
+		    allowing(cumulative).getValue(1);
+		    will(returnValue(0.875));
+		    allowing(cumulative).getValue(2);
+		    will(returnValue(1.0));
 		}});
 	}
 	
@@ -234,8 +297,14 @@ public class DataUtilitiesTest {
 	}
 	
 	@Test
-	public void testGetCumulativePercentages() {
-		fail("Not yet implemented");
+	public void testGetCumulativePercentages_validKeyedValue() {
+		for (int i = 0; i < 3; i++)
+			assertEquals(cumulative.getValue(i), keyedValues.getValue(i));
 	}
 
+	@Test (expected = InvalidParameterException.class)
+	public void testGetCumulativePercentages_invalidInput() throws InvalidParameterException{
+			DataUtilities.getCumulativePercentages(null);
+			fail("Exception not thrown. ");
+	}
 }
