@@ -125,8 +125,10 @@ public class RangeTest {
 		Range r1 = new Range(1, 2);
 		Range r2 = new Range(1, 2);
 		Range range = Range.combine(r1, r2);
-		assertEquals("The range should be equal to the equivanlent ranges", range, r1);
-		assertEquals("The range should be equal to the equivanlent ranges", range, r2);
+		double lowerBound = range.getLowerBound();
+		double upperBound = lowerBound + range.getLength();
+		assertEquals(lowerBound, 1, .000000001d);
+		assertEquals(upperBound, 2, .000000001d);
 	}
 	
 	@Test
@@ -134,7 +136,10 @@ public class RangeTest {
 		Range r1 = null;
 		Range r2 = new Range(1, 2);
 		Range range = Range.combine(r1, r2);
-		assertEquals("The range should be equal to the non-null range", range, r2);
+		double lowerBound = range.getLowerBound();
+		double upperBound = lowerBound + range.getLength();
+		assertEquals(lowerBound, 1, .000000001d);
+		assertEquals(upperBound, 2, .000000001d);
 	}
 	
 	@Test 
@@ -142,7 +147,10 @@ public class RangeTest {
 		Range r1 = new Range(1, 2);
 		Range r2 = null;
 		Range range = Range.combine(r1, r2);
-		assertEquals("The range should be equal to the non-null range", range, r1);
+		double lowerBound = range.getLowerBound();
+		double upperBound = lowerBound + range.getLength();
+		assertEquals(lowerBound, 1, .000000001d);
+		assertEquals(upperBound, 2, .000000001d);
 	}
 	
 	@Test
@@ -171,6 +179,8 @@ public class RangeTest {
 		Range r2 = new Range(1, 2);
 		try {
 			Range range = Range.combine(r1, r2);
+			double lowerBound = range.getLowerBound();
+			double upperBound = lowerBound + range.getLength();
 			fail("Combine should not accept ranges that do not overlap");
 		} catch(Exception e) {
 			Assert.assertNotNull(e);
