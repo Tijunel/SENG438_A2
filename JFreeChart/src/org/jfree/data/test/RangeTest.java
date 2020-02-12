@@ -2,8 +2,11 @@ package org.jfree.data.test;
 
 import static org.junit.Assert.*;
 
+import java.security.InvalidParameterException;
+
 import org.jfree.data.Range;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.*;
 
 
@@ -274,4 +277,243 @@ public class RangeTest {
 			fail("Combine did not accept overlapping ranges where range two contains range one");
 		}
 	}
+	
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+	
+	@Test
+	public void testShiftNullRange() {
+		Range r1 = null;
+		double delta = 0;
+		
+		thrown.expect(InvalidParameterException.class);
+		
+		Range range = Range.shift(r1, delta);
+	}
+	
+	@Test
+	public void testShiftAllNegativeRangeNegativeDelta() {
+		Range r1 = new Range(-5, -2);
+		double delta = -2;
+		try {
+			Range range = Range.shift(r1, delta);
+			Range expectedRange = new Range(-7, -4);
+			assertEquals("Range (-5,-2) properly shifted to Range (-7, -4)", expectedRange, range);
+		} catch(Exception e) {
+			fail("Shift did not accept a fully negative range with a negative delta.");
+		}
+	}
+	
+	@Test
+	public void testShiftAllNegativeRangeZeroDelta() {
+		Range r1 = new Range(-5, -2);
+		double delta = 0;
+		try {
+			Range range = Range.shift(r1, delta);
+			Range expectedRange = new Range(-5, -2);
+			assertEquals("Range (-5,-2) properly shifted to Range (-5, -2)", expectedRange, range);
+		} catch(Exception e) {
+			fail("Shift did not accept a fully negative range with a zero delta.");
+		}
+	}
+	
+	@Test
+	public void testShiftAllNegativeRangePositiveDelta() {
+		Range r1 = new Range(-5, -2);
+		double delta = 1;
+		try {
+			Range range = Range.shift(r1, delta);
+			Range expectedRange = new Range(-4, -1);
+			assertEquals("Range (-5,-2) properly shifted to Range (-4, -1)", expectedRange, range);
+		} catch(Exception e) {
+			fail("Shift did not accept a fully negative range with a positive delta.");
+		}
+	}
+	
+	@Test
+	public void testShiftAcrossZeroRangeNegativeDelta() {
+		Range r1 = new Range(-2, 2);
+		double delta = -1;
+		try {
+			Range range = Range.shift(r1, delta);
+			Range expectedRange = new Range(-3, 1);
+			assertEquals("Range (-2, 2) properly shifted to Range (-3, 1)", expectedRange, range);
+		} catch(Exception e) {
+			fail("Shift did not accept a range across zero with a negative delta.");
+		}
+	}
+	
+	@Test
+	public void testShiftAcrossZeroRangeZeroDelta() {
+		Range r1 = new Range(-2, 2);
+		double delta = 0;
+		try {
+			Range range = Range.shift(r1, delta);
+			Range expectedRange = new Range(-2, 2);
+			assertEquals("Range (-2, 2) properly shifted to Range (-2, 2)", expectedRange, range);
+		} catch(Exception e) {
+			fail("Shift did not accept a range across zero with a zero delta.");
+		}
+	}
+	
+	@Test
+	public void testShiftAcrossZeroRangePositiveDelta() {
+		Range r1 = new Range(-2, 2);
+		double delta = 1;
+		try {
+			Range range = Range.shift(r1, delta);
+			Range expectedRange = new Range(-1, 3);
+			assertEquals("Range (-2, 2) properly shifted to Range (-1, 3)", expectedRange, range);
+		} catch(Exception e) {
+			fail("Shift did not accept a range across zero with a poitive delta.");
+		}
+	}
+	
+	@Test
+	public void testShiftAllPositiveRangeNegativeDelta() {
+		Range r1 = new Range(2, 5);
+		double delta = -1;
+		try {
+			Range range = Range.shift(r1, delta);
+			Range expectedRange = new Range(1, 4);
+			assertEquals("Range (2, 5) properly shifted to Range (1, 4)", expectedRange, range);
+		} catch(Exception e) {
+			fail("Shift did not accept a fully positive range with a negative delta.");
+		}
+	}
+	
+	@Test
+	public void testShiftAllPositiveRangeZeroDelta() {
+		Range r1 = new Range(2, 5);
+		double delta = 0;
+		try {
+			Range range = Range.shift(r1, delta);
+			Range expectedRange = new Range(2, 5);
+			assertEquals("Range (2, 5) properly shifted to Range (2, 5)", expectedRange, range);
+		} catch(Exception e) {
+			fail("Shift did not accept a fully positive range with a zero delta.");
+		}
+	}
+	
+	@Test
+	public void testShiftAllPositiveRangePositiveDelta() {
+		Range r1 = new Range(2, 5);
+		double delta = 1;
+		try {
+			Range range = Range.shift(r1, delta);
+			Range expectedRange = new Range(3, 6);
+			assertEquals("Range (2, 5) properly shifted to Range (3, 6)", expectedRange, range);
+		} catch(Exception e) {
+			fail("Shift did not accept a fully positive range with a positive delta.");
+		}
+	}
+	
+	@Test
+	public void testIntersects_lowerLessThanThisLower_upperLessThanThisLower() {
+		Range r1 = new Range(-2, 2);
+		double lower = -5, upper = -4;
+		try {
+			boolean intersectCheck = r1.intersects(lower, upper);
+			assertFalse("Range (-5, -4) does not intersect Range (-2, 2)", intersectCheck);
+		}catch(Exception e) {
+			fail("Intersect did not accept Range lower than this Range.");
+		}
+	}
+	
+	@Test
+	public void testIntersects_lowerLessThanThisLower_upperGreaterThanThisLower() {
+		Range r1 = new Range(-2, 2);
+		double lower = -5, upper = 0;
+		try {
+			boolean intersectCheck = r1.intersects(lower, upper);
+			assertTrue("Range (-5, 0) does intersect Range (-2, 2)", intersectCheck);
+		}catch(Exception e) {
+			fail("Intersect did not accept Range surronding lower bound");
+		}
+	}
+	
+	@Test
+	public void testIntersects_lowerEqualToThisLower_upperGreaterThanThisLower() {
+		Range r1 = new Range(-2, 2);
+		double lower = -2, upper = -1;
+		try {
+			boolean intersectCheck = r1.intersects(lower, upper);
+			assertTrue("Range (-2, -1) does intersect Range (-2, 2)", intersectCheck);
+		}catch(Exception e) {
+			fail("Intersect did not accept Range with equal lower bound Range.");
+		}
+	}
+	
+	@Test
+	public void testIntersects_lowerEqualToThisLower_upperEqualToThisUpper() {
+		Range r1 = new Range(-2, 2);
+		double lower = -2, upper = 2;
+		try {
+			boolean intersectCheck = r1.intersects(lower, upper);
+			assertTrue("Range (-2, 2) does intersect Range (-2, 2)", intersectCheck);
+		}catch(Exception e) {
+			fail("Intersect did not accept Range equal to this Range.");
+		}
+	}
+	
+	@Test
+	public void testIntersects_lowerGreaterThanThisLower_upperEqualToThisUpper() {
+		Range r1 = new Range(-2, 2);
+		double lower = -1, upper = 2;
+		try {
+			boolean intersectCheck = r1.intersects(lower, upper);
+			assertTrue("Range (-1, 2) does intersect Range (-2, 2)", intersectCheck);
+		}catch(Exception e) {
+			fail("Intersect did not accept Range with equal upper bound Range.");
+		}
+	}
+	
+	@Test
+	public void testIntersects_lowerGreaterThanThisLower_upperGreaterThanThisUpper() {
+		Range r1 = new Range(-2, 2);
+		double lower = 0, upper = 5;
+		try {
+			boolean intersectCheck = r1.intersects(lower, upper);
+			assertTrue("Range (0, 5) does intersect Range (-2, 2)", intersectCheck);
+		}catch(Exception e) {
+			fail("Intersect did not accept Range surronding upper bound.");
+		}
+	}
+	
+	@Test
+	public void testIntersects_lowerGreaterThanThisUpper_upperGreaterThanThisUpper() {
+		Range r1 = new Range(-2, 2);
+		double lower = 4, upper = 5;
+		try {
+			boolean intersectCheck = r1.intersects(lower, upper);
+			assertFalse("Range (4, 5) does not intersect Range (-2, 2)", intersectCheck);
+		}catch(Exception e) {
+			fail("Intersect did not accept Range greater than this Range.");
+		}
+	}
+	
+	@Test
+	public void testIntersects_lowerLessThanThisLower_upperGreaterThanThisUpper() {
+		Range r1 = new Range(-2, 2);
+		double lower = -5, upper = 5;
+		try {
+			boolean intersectCheck = r1.intersects(lower, upper);
+			assertTrue("Range (-5, 5) does intersect Range (-2, 2)", intersectCheck);
+		}catch(Exception e) {
+			fail("Intersect did not accept Range surronding this Range.");
+		}
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
