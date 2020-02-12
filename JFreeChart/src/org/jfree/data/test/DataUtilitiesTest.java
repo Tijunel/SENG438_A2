@@ -24,14 +24,23 @@ public class DataUtilitiesTest {
 	
 	@Before
 	public void setUp() throws Exception{
+		// Add expectations for the mocks (expected return values for each method)
 		mockingContext.checking(new Expectations() {{
-		    // setup empty Values2D
+		    
+			// ZEROV2D SETUP - setup mock for empty Values2D
 			allowing(ZeroV2D).getRowCount();
 		    will(returnValue(0)); 
 		    allowing(ZeroV2D).getColumnCount();
 		    will(returnValue(0));
 		    
-		    // setup 1x1 Values2D as [(5.5)]
+		    // ONEV2D SETUP - setup mock for 1x1 Values2D as [(5.5)]
+		    allowing(OneV2D).getRowCount();
+		    will(returnValue(1));
+		    allowing(OneV2D).getColumnCount();
+		    will(returnValue(1));
+		    allowing(OneV2D).getValue(0, 0);
+		    will(returnValue(5.5));
+		    
 		    // if index is less than 0 or greater than 0, return IndexOutOfBoundsException
 		    allowing(OneV2D).getValue(with(lessThan(0)), with(any(Integer.class)));
 		    will(throwException(new IndexOutOfBoundsException())); //return exception
@@ -42,14 +51,8 @@ public class DataUtilitiesTest {
 		    allowing(OneV2D).getValue(with(any(Integer.class)), with(greaterThan(0)));
 		    will(throwException(new IndexOutOfBoundsException())); 
 		    
-		    allowing(OneV2D).getRowCount();
-		    will(returnValue(1));
-		    allowing(OneV2D).getColumnCount();
-		    will(returnValue(1));
-		    allowing(OneV2D).getValue(0, 0);
-		    will(returnValue(5.5));
 		    
-		    // setup 4x4 Values2D as [(5.3, 4.3, 3.3), (1.8, 7.5, 4.2), (2.4, 5.3, 6.7)]
+		    // THREEV2D SETUP - setup 4x4 Values2D as [(5.3, 4.3, 3.3), (1.8, 7.5, 4.2), (2.4, 5.3, 6.7)]
 		    allowing(ThreeV2D).getRowCount();
 		    will(returnValue(3));
 		    allowing(ThreeV2D).getColumnCount();
@@ -86,21 +89,25 @@ public class DataUtilitiesTest {
 		}});
 	}
 	
-	// testCalculateColumnTotal
-	
-	@Test
+	// TESTS FOR testCalculateColumnTotal
+	@Test	
+	// Test on an empty Value2D object
 	public void testCalculateColumnTotalZeroV2D() {
 		double result = DataUtilities.calculateColumnTotal(ZeroV2D, 0);
 		assertEquals(0, result, .0000000001d);
 	}
 	
 	@Test
+	// Test on a 1x1 Value2D object [(5.5)]
 	public void testCalculateColumnTotalOneV2D() {
 		double result2 = DataUtilities.calculateColumnTotal(OneV2D, 0);
 		assertEquals(5.5, result2, .0000000001d);
 	}
 	
+
 	@Test (expected = InvalidParameterException.class)
+	// Test on a 3x3 Value2D object [(5.3, 4.3, 3.3), (1.8, 7.5, 4.2), (2.4, 5.3, 6.7)]
+	// Test invalid index - below lower bounds, expect to throw exception
 	public void testCalculateColumnTotalThreeV2D_BLB() {
 		double result1 = DataUtilities.calculateColumnTotal(ThreeV2D, -1);
 		System.out.println(result1);
@@ -108,6 +115,8 @@ public class DataUtilitiesTest {
 	}
 	
 	@Test (expected = InvalidParameterException.class)
+	// Test on a 3x3 Value2D object [(5.3, 4.3, 3.3), (1.8, 7.5, 4.2), (2.4, 5.3, 6.7)]
+	// Test invalid index - above upper bounds, expect to throw exception
 	public void testCalculateColumnTotalThreeV2D_AUB() {
 		double result1 = DataUtilities.calculateColumnTotal(ThreeV2D, 3);
 		System.out.println(result1);
@@ -115,6 +124,8 @@ public class DataUtilitiesTest {
 	}
 		
 	@Test
+	// Test on a 3x3 Value2D object [(5.3, 4.3, 3.3), (1.8, 7.5, 4.2), (2.4, 5.3, 6.7)]
+	// Test valid index ranges
 	public void testCalculateColumnTotalThreeV2D() {
 		double result2 = DataUtilities.calculateColumnTotal(ThreeV2D, 0);
 		assertEquals(9.5, result2, .0000000001d);
@@ -125,22 +136,26 @@ public class DataUtilitiesTest {
 		double result4 = DataUtilities.calculateColumnTotal(ThreeV2D, 2);
 		assertEquals(14.2, result4, .0000000001d);
 	}
-
-	//testCalculateRowTotal
 	
+
+	//TESTS FOR testCalculateRowTotal
 	@Test
+	// Test on an empty Value2D object
 	public void testCalculateRowTotalZeroV2D() {
 		double result = DataUtilities.calculateRowTotal(ZeroV2D, 0);
 		assertEquals(0, result, .0000000001d);
 	}
 	
 	@Test
+	// Test on a 1x1 Value2D object [(5.5)]
 	public void testCalculateRowTotalOneV2D() {
 		double result2 = DataUtilities.calculateRowTotal(OneV2D, 0);
 		assertEquals(5.5, result2, .0000000001d);
 	}
 	
 	@Test (expected = InvalidParameterException.class)
+	// Test on a 3x3 Value2D object [(5.3, 4.3, 3.3), (1.8, 7.5, 4.2), (2.4, 5.3, 6.7)]
+	// Test invalid index - below lower bounds, expect to throw exception
 	public void testCalculateRowTotalThreeV2D_BLB() {
 		double result1 = DataUtilities.calculateRowTotal(ThreeV2D, -1);
 		System.out.println(result1);
@@ -148,6 +163,8 @@ public class DataUtilitiesTest {
 	}
 	
 	@Test (expected = InvalidParameterException.class)
+	// Test on a 3x3 Value2D object [(5.3, 4.3, 3.3), (1.8, 7.5, 4.2), (2.4, 5.3, 6.7)]
+	// Test invalid index - above upper bounds, expect to throw exception
 	public void testCalculateRowTotalThreeV2D_AUB() {
 		double result1 = DataUtilities.calculateRowTotal(ThreeV2D, 3);
 		System.out.println(result1);
@@ -155,6 +172,8 @@ public class DataUtilitiesTest {
 	}
 	
 	@Test
+	// Test on a 3x3 Value2D object [(5.3, 4.3, 3.3), (1.8, 7.5, 4.2), (2.4, 5.3, 6.7)]
+	// Test valid index ranges
 	public void testCalculateRowTotalThreeV2D() {
 		double result2 = DataUtilities.calculateRowTotal(ThreeV2D, 0);
 		assertEquals(12.9, result2, .0000000001d);
@@ -165,10 +184,12 @@ public class DataUtilitiesTest {
 		double result4 = DataUtilities.calculateRowTotal(ThreeV2D, 2);
 		assertEquals(14.4, result4, .0000000001d);
 	}
+
 	
-	//testCreateNumberArray
+	//TESTS FOR testCreateNumberArray
 	
 	@Test (expected = IllegalArgumentException.class)
+	// Test converting an invalid double array, should throw exception
 	public void testCreateNumberArrayZero(){
 		double[] testArr = null;
 		Number[] resultArr = DataUtilities.createNumberArray(testArr);
@@ -178,6 +199,7 @@ public class DataUtilitiesTest {
 	}
 	
 	@Test
+	// Test converting a valid double array
 	public void testCreateNumberArray() {
 		Number[] expectedArr = new Number[4];
 		expectedArr[0] = 1.0;
