@@ -38,7 +38,7 @@ public class RangeTest {
 	@Test
 	public void testLowerBoundShouldBeZero() {
 		Range range = new Range(0, 1);
-		assertEquals(range.getLowerBound(), 0, .000000001d);
+		assertEquals(0, range.getLowerBound(), .000000001d);
 	}
 	@Test
 	public void testGetLowerBoundOfNullRange() {
@@ -54,7 +54,7 @@ public class RangeTest {
 	@Test 
 	public void testUpperBoundShouldBeZero() {
 		Range range = new Range(-1, 0);
-		assertEquals(range.getUpperBound(), 0, .000000001d);
+		assertEquals(0, range.getUpperBound(), .000000001d);
 	}
 	@Test
 	public void testGetUpperBoundOfNullRange() {
@@ -70,17 +70,17 @@ public class RangeTest {
 	@Test
 	public void testGetLengthWithPositives() {
 		Range range = new Range(1, 10);
-		assertEquals(range.getLength(), 9, .000000001d);
+		assertEquals(9, range.getLength(), .000000001d);
 	}
 	@Test
 	public void testLengthShouldBeZero() {
 		Range range = new Range(0, 0);
-		assertEquals(range.getLength(), 0, .000000001d);
+		assertEquals(0, range.getLength(), .000000001d);
 	}
 	@Test
 	public void testGetLengthWithNegatives() {
 		Range range = new Range(-10, -1);
-		assertEquals(range.getLength(), 9, .000000001d);
+		assertEquals(9, range.getLength(), .000000001d);
 	}
 	@Test
 	public void testGetLengthOfNullRange() {
@@ -130,8 +130,8 @@ public class RangeTest {
 		Range range = Range.combine(r1, r2);
 		double lowerBound = range.getLowerBound();
 		double upperBound = lowerBound + range.getLength();
-		assertEquals(lowerBound, 1, .000000001d);
-		assertEquals(upperBound, 2, .000000001d);
+		assertEquals(1, lowerBound, .000000001d);
+		assertEquals(2, upperBound, .000000001d);
 	}
 	
 	@Test
@@ -141,8 +141,8 @@ public class RangeTest {
 		Range range = Range.combine(r1, r2);
 		double lowerBound = range.getLowerBound();
 		double upperBound = lowerBound + range.getLength();
-		assertEquals(lowerBound, 1, .000000001d);
-		assertEquals(upperBound, 2, .000000001d);
+		assertEquals(1, lowerBound, .000000001d);
+		assertEquals(2, upperBound, .000000001d);
 	}
 	
 	@Test 
@@ -152,8 +152,8 @@ public class RangeTest {
 		Range range = Range.combine(r1, r2);
 		double lowerBound = range.getLowerBound();
 		double upperBound = lowerBound + range.getLength();
-		assertEquals(lowerBound, 1, .000000001d);
-		assertEquals(upperBound, 2, .000000001d);
+		assertEquals(1, lowerBound, .000000001d);
+		assertEquals(2, upperBound, .000000001d);
 	}
 	
 	@Test
@@ -182,8 +182,6 @@ public class RangeTest {
 		Range r2 = new Range(1, 2);
 		try {
 			Range range = Range.combine(r1, r2);
-			double lowerBound = range.getLowerBound();
-			double upperBound = lowerBound + range.getLength();
 			fail("Combine should not accept ranges that do not overlap");
 		} catch(Exception e) {
 			Assert.assertNotNull(e);
@@ -198,8 +196,8 @@ public class RangeTest {
 			Range range = Range.combine(r1, r2);
 			double lowerBound = range.getLowerBound();
 			double upperBound = lowerBound + range.getLength();
-			assertEquals(lowerBound, 1, .000000001d);
-			assertEquals(upperBound, 4, .000000001d);
+			assertEquals(1, lowerBound, .000000001d);
+			assertEquals(4, upperBound, .000000001d);
 		} catch(Exception e) {
 			fail("Combine did not accept overlapping ranges where upper bounds were equal");
 		}
@@ -213,8 +211,8 @@ public class RangeTest {
 			Range range = Range.combine(r1, r2);
 			double lowerBound = range.getLowerBound();
 			double upperBound = lowerBound + range.getLength();
-			assertEquals(lowerBound, 1, .000000001d);
-			assertEquals(upperBound, 4, .000000001d);
+			assertEquals(1, lowerBound, .000000001d);
+			assertEquals(4, upperBound, .000000001d);
 		} catch(Exception e) {
 			fail("Combine did not accept overlapping ranges where range one upper bound equals range two lower");
 		}
@@ -228,8 +226,8 @@ public class RangeTest {
 			Range range = Range.combine(r1, r2);
 			double lowerBound = range.getLowerBound();
 			double upperBound = lowerBound + range.getLength();
-			assertEquals(lowerBound, 1, .000000001d);
-			assertEquals(upperBound, 5, .000000001d);
+			assertEquals(1, lowerBound, .000000001d);
+			assertEquals(5, upperBound, .000000001d);
 		} catch(Exception e) {
 			fail("Combine did not accept overlapping ranges where range one lower bound equals range two lower");
 		}
@@ -243,8 +241,8 @@ public class RangeTest {
 			Range range = Range.combine(r1, r2);
 			double lowerBound = range.getLowerBound();
 			double upperBound = lowerBound + range.getLength();
-			assertEquals(lowerBound, 1, .000000001d);
-			assertEquals(upperBound, 3, .000000001d);
+			assertEquals(1, lowerBound, .000000001d);
+			assertEquals(3, upperBound, .000000001d);
 		} catch(Exception e) {
 			fail("Combine did not accept overlapping ranges where range one lower bound equals range two upper");
 		}
@@ -257,8 +255,8 @@ public class RangeTest {
 			Range range = Range.combine(r1, r2);
 			double lowerBound = range.getLowerBound();
 			double upperBound = lowerBound + range.getLength();
-			assertEquals(lowerBound, 1, .000000001d);
-			assertEquals(upperBound, 10, .000000001d);
+			assertEquals(1, lowerBound, .000000001d);
+			assertEquals(10, upperBound, .000000001d);
 		} catch(Exception e) {
 			fail("Combine did not accept overlapping ranges where range one contains range two");
 		}
@@ -271,8 +269,8 @@ public class RangeTest {
 			Range range = Range.combine(r1, r2);
 			double lowerBound = range.getLowerBound();
 			double upperBound = lowerBound + range.getLength();
-			assertEquals(lowerBound, 1, .000000001d);
-			assertEquals(upperBound, 10, .000000001d);
+			assertEquals(1, lowerBound, .000000001d);
+			assertEquals(10, upperBound, .000000001d);
 		} catch(Exception e) {
 			fail("Combine did not accept overlapping ranges where range two contains range one");
 		}

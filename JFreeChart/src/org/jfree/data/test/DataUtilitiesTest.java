@@ -49,7 +49,7 @@ public class DataUtilitiesTest {
 		    allowing(OneV2D).getValue(0, 0);
 		    will(returnValue(5.5));
 		    
-		    // setup 4x4 Values2D as [(5.3, 4.3, 3.3), (1.8, 7.5, 4.2), (2.4, 5.3, 6.7)]
+		    // setup 3x3 Values2D as [(5.3, 4.3, 3.3), (1.8, 7.5, 4.2), (2.4, 5.3, 6.7)]
 		    allowing(ThreeV2D).getRowCount();
 		    will(returnValue(3));
 		    allowing(ThreeV2D).getColumnCount();
