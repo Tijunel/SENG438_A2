@@ -82,37 +82,54 @@ public class RangeTest {
 	@Test
 	public void testSameRange() { //Equivalent to Range One Upper and Range One Lower Equal Range Two Upper and Range Two Lower
 		Range r1 = new Range(1, 2);
-		Range range = Range.combine(r1, r1);
-		double lowerBound = range.getLowerBound();
-		double upperBound = range.getLowerBound() + range.getLength();
-		boolean isCorrect = lowerBound == 1 && upperBound == 2;
-		Assert.assertTrue(isCorrect);
+		try {
+			Range range = Range.combine(r1, r1);
+			double lowerBound = range.getLowerBound();
+			double upperBound = range.getLowerBound() + range.getLength();
+			boolean isCorrect = lowerBound == 1 && upperBound == 2;
+			Assert.assertTrue(isCorrect);
+		} catch(Exception e) {
+			fail("Combine did not accept Range 1 greater than Range 2, and threw an " + e.getClass());
+		}
 	}
 	
 	@Test
 	public void testCombineNullRangeOne() {
 		Range r2 = new Range(1, 2);
-		Range range = Range.combine(null, r2);
-		double lowerBound = range.getLowerBound();
-		double upperBound = range.getLowerBound() + range.getLength();
-		boolean isCorrect = lowerBound == 1 && upperBound == 2;
-		Assert.assertTrue(isCorrect);
+		try {
+			Range range = Range.combine(null, r2);
+			double lowerBound = range.getLowerBound();
+			double upperBound = range.getLowerBound() + range.getLength();
+			boolean isCorrect = lowerBound == 1 && upperBound == 2;
+			Assert.assertTrue(isCorrect);
+		} catch(Exception e) {
+			fail("Combine did not accept Range 1 as null, and threw an Exception");
+		}
 	}
 	
 	@Test 
 	public void testCombineNullRangeTwo() {
 		Range r1 = new Range(1, 2);
-		Range range = Range.combine(r1, null);
-		double lowerBound = range.getLowerBound();
-		double upperBound = range.getLowerBound() + range.getLength();
-		boolean isCorrect = lowerBound == 1 && upperBound == 2;
-		Assert.assertTrue(isCorrect);
+		try {
+			Range range = Range.combine(r1, null);
+			double lowerBound = range.getLowerBound();
+			double upperBound = range.getLowerBound() + range.getLength();
+			boolean isCorrect = lowerBound == 1 && upperBound == 2;
+			Assert.assertTrue(isCorrect);
+		} catch(Exception e) {
+			fail("Combine did not accept Range 2 as null, and threw an Exception");
+		}
+		
 	}
 	
 	@Test
 	public void testCombineNullRanges() {
-		Range range = Range.combine(null, null);
-		Assert.assertNull(range);
+		try {
+			Range range = Range.combine(null, null);
+			Assert.assertNull(range);
+		} catch(Exception e) {
+			fail("Combine did not accept two null ranges, and threw an " + e.getClass());
+		}
 	}
 	
 	@Test
@@ -122,8 +139,8 @@ public class RangeTest {
 		try {
 			Range range = Range.combine(r1, r2);
 			Assert.assertNull(range);
-		} catch(IllegalArgumentException e) {
-			fail("Combine did not accept Range 1 greater than Range 2, and threw an IllegalArgumentException");
+		} catch(Exception e) {
+			fail("Combine did not accept Range 1 less than Range 2, and threw an " + e.getClass());
 		}
 	}
 	
@@ -134,8 +151,8 @@ public class RangeTest {
 		try {
 			Range range = Range.combine(r1, r2);
 			Assert.assertNull(range);
-		} catch(IllegalArgumentException e) {
-			fail("Combine did not accept Range 2 greater than Range 1, and threw an IllegalArgumentException");
+		} catch(Exception e) {
+			fail("Combine did not accept Range 2 greater than Range 1, and threw an " + e.getClass());
 		}
 	}
 	
@@ -149,8 +166,8 @@ public class RangeTest {
 			double upperBound = lowerBound + range.getLength();
 			boolean isCorrect = lowerBound == 1 && upperBound == 4;
 			Assert.assertTrue("The lower bound should be 1 and the upper bound should be 4", isCorrect);
-		} catch(IllegalArgumentException e) {
-			fail("Combine did not accept overlapping ranges where upper bounds were equal, and threw an IllegalArgumentException");
+		} catch(Exception e) {
+			fail("Combine did not accept overlapping ranges where upper bounds were equal, and threw an " + e.getClass());
 		}
 	}
 	
@@ -164,8 +181,8 @@ public class RangeTest {
 			double upperBound = lowerBound + range.getLength();
 			boolean isCorrect = lowerBound == 1 && upperBound == 4;
 			Assert.assertTrue("The lower bound should be 1 and the upper bound should be 4", isCorrect);
-		} catch(IllegalArgumentException e) {
-			fail("Combine did not accept overlapping ranges where range one upper bound equals range two lower, and threw an IllegalArgumentException");
+		} catch(Exception e) {
+			fail("Combine did not accept overlapping ranges where range one upper bound equals range two lower, and threw an " + e.getClass());
 		}
 	}
 	
@@ -179,8 +196,8 @@ public class RangeTest {
 			double upperBound = lowerBound + range.getLength();
 			boolean isCorrect = lowerBound == 1 && upperBound == 5;
 			Assert.assertTrue("The lower bound should be 1 and the upper bound should be 5", isCorrect);
-		} catch(IllegalArgumentException e) {
-			fail("Combine did not accept overlapping ranges where range one lower bound equals range two lower, and threw an IllegalArgumentException");
+		} catch(Exception e) {
+			fail("Combine did not accept overlapping ranges where range one lower bound equals range two lower, and threw an " + e.getClass());
 		}
 	}
 	
@@ -194,8 +211,8 @@ public class RangeTest {
 			double upperBound = lowerBound + range.getLength();
 			boolean isCorrect = lowerBound == -1 && upperBound == 4;
 			Assert.assertTrue("The lower bound should be -1 and the upper bound should be 4", isCorrect);
-		} catch(IllegalArgumentException e) {
-			fail("Combine did not accept overlapping ranges where range one lower bound equals range two upper, and threw an IllegalArgumentException");
+		} catch(Exception e) {
+			fail("Combine did not accept overlapping ranges where range one lower bound equals range two upper, and threw an " + e.getClass());
 		}
 	}
 	@Test
@@ -208,8 +225,8 @@ public class RangeTest {
 			double upperBound = lowerBound + range.getLength();
 			boolean isCorrect = lowerBound == 1 && upperBound == 10;
 			Assert.assertTrue("The lower bound should be 1 and the upper bound should be 10", isCorrect);
-		} catch(IllegalArgumentException e) {
-			fail("Combine did not accept overlapping ranges where range one contains range two, and threw an IllegalArgumentException");
+		} catch(Exception e) {
+			fail("Combine did not accept overlapping ranges where range one contains range two, and threw an " + e.getClass());
 		}
 	}
 	@Test
@@ -222,8 +239,8 @@ public class RangeTest {
 			double upperBound = lowerBound + range.getLength();
 			boolean isCorrect = lowerBound == 1 && upperBound == 10;
 			Assert.assertTrue("The lower bound should be 1 and the upper bound should be 10", isCorrect);
-		} catch(IllegalArgumentException e) {
-			fail("Combine did not accept overlapping ranges where range two contains range one, and threw an IllegalArgumentException");
+		} catch(Exception e) {
+			fail("Combine did not accept overlapping ranges where range two contains range one, and threw an " + e.getClass());
 		}
 	}
 	
