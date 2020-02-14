@@ -1,10 +1,10 @@
 package org.jfree.data.test;
 
 import static org.junit.Assert.*;
-
 import java.security.InvalidParameterException;
-
 import org.jfree.data.Range;
+import org.jfree.data.Values2D;
+import org.jmock.Mockery;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.*;
@@ -12,40 +12,23 @@ import org.junit.*;
 
 public class RangeTest {
 	private Range exampleRange;
+	Mockery mockingLowerBound = new Mockery();
 	
-	//getLowerBound() Test
+	//double getLowerBound() Test
 	@Test
 	public void testLowerBoundShouldBeZero() {
 		Range range = new Range(0, 1);
 		assertEquals(0, range.getLowerBound(), .000000001d);
 	}
-	@Test
-	public void testGetLowerBoundOfNullRange() {
-		Range range = null;
-		try {
-			double length = range.getLength();
-			fail("Should not be able to length of a null range.");
-		} catch(Exception e) {
-			Assert.assertNotNull(e);
-		}
-	}
-	//getUpperBound() Test
+	
+	//double getUpperBound() Test
 	@Test 
 	public void testUpperBoundShouldBeZero() {
 		Range range = new Range(-1, 0);
 		assertEquals(0, range.getUpperBound(), .000000001d);
 	}
-	@Test
-	public void testGetUpperBoundOfNullRange() {
-		Range range = null;
-		try {
-			double length = range.getLength();
-			fail("Should not be able to length of a null range.");
-		} catch(Exception e) {
-			Assert.assertNotNull(e);
-		}
-	}
-	//getLength() Tests
+	
+	//double getLength() Tests
 	@Test
 	public void testGetLengthWithPositives() {
 		Range range = new Range(1, 10);
@@ -57,21 +40,17 @@ public class RangeTest {
 		assertEquals(0, range.getLength(), .000000001d);
 	}
 	@Test
+	public void testLengthShouldBeOne() {
+		Range range = new Range(1, 2);
+		assertEquals(1, range.getLength(), .000000001d);
+	}
+	@Test
 	public void testGetLengthWithNegatives() {
 		Range range = new Range(-10, -1);
 		assertEquals(9, range.getLength(), .000000001d);
 	}
-	@Test
-	public void testGetLengthOfNullRange() {
-		Range range = null;
-		try {
-			double length = range.getLength();
-			fail("Should not be able to length of a null range.");
-		} catch(Exception e) {
-			Assert.assertNotNull(e);
-		}
-	}
-	//bool contains(double value) Tests
+	
+	//boolean contains(double value) Tests
 	@Test
 	public void testValueInRange() {
 		Range range = new Range(0, 10);
@@ -90,56 +69,43 @@ public class RangeTest {
 		boolean valueIsInRange = range.contains(15);
 		Assert.assertFalse(valueIsInRange);
 	}
-	@Test
-	public void testContainsOfNullRange() {
-		Range range = null;
-		try {
-			boolean valueIsInRange = range.contains(1);
-			fail("Combine should be able to call contains of a null value.");
-		} catch(Exception e) {
-			Assert.assertNotNull(e);
-		}
-	}
 	
-	//combine(Range range1, Range range2) Tests
+	//Range combine(Range range1, Range range2) Tests
+	@Rule
+	public final ExpectedException exception = ExpectedException.none();
 	@Test
 	public void testSameRange() { //Equivalent to Range One Upper and Range One Lower Equal Range Two Upper and Range Two Lower
 		Range r1 = new Range(1, 2);
-		Range r2 = new Range(1, 2);
-		Range range = Range.combine(r1, r2);
+		Range range = Range.combine(r1, r1);
 		double lowerBound = range.getLowerBound();
-		double upperBound = lowerBound + range.getLength();
-		assertEquals(1, lowerBound, .000000001d);
-		assertEquals(2, upperBound, .000000001d);
+		double upperBound = range.getLowerBound() + range.getLength();
+		boolean isCorrect = lowerBound == 1 && upperBound == 2;
+		Assert.assertTrue(isCorrect);
 	}
 	
 	@Test
 	public void testCombineNullRangeOne() {
-		Range r1 = null;
 		Range r2 = new Range(1, 2);
-		Range range = Range.combine(r1, r2);
+		Range range = Range.combine(null, r2);
 		double lowerBound = range.getLowerBound();
-		double upperBound = lowerBound + range.getLength();
-		assertEquals(1, lowerBound, .000000001d);
-		assertEquals(2, upperBound, .000000001d);
+		double upperBound = range.getLowerBound() + range.getLength();
+		boolean isCorrect = lowerBound == 1 && upperBound == 2;
+		Assert.assertTrue(isCorrect);
 	}
 	
 	@Test 
 	public void testCombineNullRangeTwo() {
 		Range r1 = new Range(1, 2);
-		Range r2 = null;
-		Range range = Range.combine(r1, r2);
+		Range range = Range.combine(r1, null);
 		double lowerBound = range.getLowerBound();
-		double upperBound = lowerBound + range.getLength();
-		assertEquals(1, lowerBound, .000000001d);
-		assertEquals(2, upperBound, .000000001d);
+		double upperBound = range.getLowerBound() + range.getLength();
+		boolean isCorrect = lowerBound == 1 && upperBound == 2;
+		Assert.assertTrue(isCorrect);
 	}
 	
 	@Test
 	public void testCombineNullRanges() {
-		Range r1 = null;
-		Range r2 = null;
-		Range range = Range.combine(r1, r2);
+		Range range = Range.combine(null, null);
 		Assert.assertNull(range);
 	}
 	
@@ -147,24 +113,16 @@ public class RangeTest {
 	public void testCombineRangeOneLessThanRangeTwo() { //Equivalent to Range Two Greater Than Range One
 		Range r1 = new Range(1, 2);
 		Range r2 = new Range(3, 4);
-		try {
-			Range range = Range.combine(r1, r2);
-			fail("Combine should not accept ranges that do not overlap");
-		} catch(Exception e) {
-			Assert.assertNotNull(e);
-		}
+		exception.expect(IllegalArgumentException.class);
+		Range.combine(r1, r2);
 	}
 	
 	@Test
 	public void testCombineRangeOneGreaterThanRangeTwo() { //Equivalent to Range Two Less Than Range One
 		Range r1 = new Range(3, 4);
 		Range r2 = new Range(1, 2);
-		try {
-			Range range = Range.combine(r1, r2);
-			fail("Combine should not accept ranges that do not overlap");
-		} catch(Exception e) {
-			Assert.assertNotNull(e);
-		}
+		exception.expect(IllegalArgumentException.class);
+		Range.combine(r1, r2);
 	}
 	
 	@Test
@@ -175,10 +133,10 @@ public class RangeTest {
 			Range range = Range.combine(r1, r2);
 			double lowerBound = range.getLowerBound();
 			double upperBound = lowerBound + range.getLength();
-			assertEquals(1, lowerBound, .000000001d);
-			assertEquals(4, upperBound, .000000001d);
-		} catch(Exception e) {
-			fail("Combine did not accept overlapping ranges where upper bounds were equal");
+			boolean isCorrect = lowerBound == 1 && upperBound == 4;
+			Assert.assertTrue("The lower bound should be 1 and the upper bound should be 4", isCorrect);
+		} catch(IllegalArgumentException e) {
+			fail("Combine did not accept overlapping ranges where upper bounds were equal, and threw an IllegalArgumentException");
 		}
 	}
 	
@@ -190,10 +148,10 @@ public class RangeTest {
 			Range range = Range.combine(r1, r2);
 			double lowerBound = range.getLowerBound();
 			double upperBound = lowerBound + range.getLength();
-			assertEquals(1, lowerBound, .000000001d);
-			assertEquals(4, upperBound, .000000001d);
-		} catch(Exception e) {
-			fail("Combine did not accept overlapping ranges where range one upper bound equals range two lower");
+			boolean isCorrect = lowerBound == 1 && upperBound == 4;
+			Assert.assertTrue("The lower bound should be 1 and the upper bound should be 4", isCorrect);
+		} catch(IllegalArgumentException e) {
+			fail("Combine did not accept overlapping ranges where range one upper bound equals range two lower, and threw an IllegalArgumentException");
 		}
 	}
 	
@@ -205,10 +163,10 @@ public class RangeTest {
 			Range range = Range.combine(r1, r2);
 			double lowerBound = range.getLowerBound();
 			double upperBound = lowerBound + range.getLength();
-			assertEquals(1, lowerBound, .000000001d);
-			assertEquals(5, upperBound, .000000001d);
-		} catch(Exception e) {
-			fail("Combine did not accept overlapping ranges where range one lower bound equals range two lower");
+			boolean isCorrect = lowerBound == 1 && upperBound == 5;
+			Assert.assertTrue("The lower bound should be 1 and the upper bound should be 5", isCorrect);
+		} catch(IllegalArgumentException e) {
+			fail("Combine did not accept overlapping ranges where range one lower bound equals range two lower, and threw an IllegalArgumentException");
 		}
 	}
 	
@@ -220,10 +178,10 @@ public class RangeTest {
 			Range range = Range.combine(r1, r2);
 			double lowerBound = range.getLowerBound();
 			double upperBound = lowerBound + range.getLength();
-			assertEquals(1, lowerBound, .000000001d);
-			assertEquals(3, upperBound, .000000001d);
-		} catch(Exception e) {
-			fail("Combine did not accept overlapping ranges where range one lower bound equals range two upper");
+			boolean isCorrect = lowerBound == -1 && upperBound == 4;
+			Assert.assertTrue("The lower bound should be -1 and the upper bound should be 4", isCorrect);
+		} catch(IllegalArgumentException e) {
+			fail("Combine did not accept overlapping ranges where range one lower bound equals range two upper, and threw an IllegalArgumentException");
 		}
 	}
 	@Test
@@ -234,10 +192,10 @@ public class RangeTest {
 			Range range = Range.combine(r1, r2);
 			double lowerBound = range.getLowerBound();
 			double upperBound = lowerBound + range.getLength();
-			assertEquals(1, lowerBound, .000000001d);
-			assertEquals(10, upperBound, .000000001d);
-		} catch(Exception e) {
-			fail("Combine did not accept overlapping ranges where range one contains range two");
+			boolean isCorrect = lowerBound == 1 && upperBound == 10;
+			Assert.assertTrue("The lower bound should be 1 and the upper bound should be 10", isCorrect);
+		} catch(IllegalArgumentException e) {
+			fail("Combine did not accept overlapping ranges where range one contains range two, and threw an IllegalArgumentException");
 		}
 	}
 	@Test
@@ -248,34 +206,26 @@ public class RangeTest {
 			Range range = Range.combine(r1, r2);
 			double lowerBound = range.getLowerBound();
 			double upperBound = lowerBound + range.getLength();
-			assertEquals(1, lowerBound, .000000001d);
-			assertEquals(10, upperBound, .000000001d);
-		} catch(Exception e) {
-			fail("Combine did not accept overlapping ranges where range two contains range one");
+			boolean isCorrect = lowerBound == 1 && upperBound == 10;
+			Assert.assertTrue("The lower bound should be 1 and the upper bound should be 10", isCorrect);
+		} catch(IllegalArgumentException e) {
+			fail("Combine did not accept overlapping ranges where range two contains range one, and threw an IllegalArgumentException");
 		}
 	}
 	
+	//Range shift(Range range, double delta) Tests
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
-	
-	@Test
-	public void testShiftNullRange() {
-		Range r1 = null;
-		double delta = 0;
-		
-		thrown.expect(InvalidParameterException.class);
-		
-		Range range = Range.shift(r1, delta);
-	}
-	
 	@Test
 	public void testShiftAllNegativeRangeNegativeDelta() {
 		Range r1 = new Range(-5, -2);
 		double delta = -2;
 		try {
 			Range range = Range.shift(r1, delta);
-			Range expectedRange = new Range(-7, -4);
-			assertEquals("Range (-5,-2) properly shifted to Range (-7, -4)", expectedRange, range);
+			double lowerBound = range.getLowerBound();
+			double upperBound = range.getLowerBound() + range.getLength();
+			boolean isCorrect = lowerBound == -7 && upperBound == -4;
+			Assert.assertTrue("Range (-5,-2) properly shifted to Range (-7, -4)",isCorrect);
 		} catch(Exception e) {
 			fail("Shift did not accept a fully negative range with a negative delta.");
 		}
@@ -287,8 +237,10 @@ public class RangeTest {
 		double delta = 0;
 		try {
 			Range range = Range.shift(r1, delta);
-			Range expectedRange = new Range(-5, -2);
-			assertEquals("Range (-5,-2) properly shifted to Range (-5, -2)", expectedRange, range);
+			double lowerBound = range.getLowerBound();
+			double upperBound = range.getLowerBound() + range.getLength();
+			boolean isCorrect = lowerBound == -5 && upperBound == -2;
+			Assert.assertTrue("Range (-5,-2) properly shifted to Range (-5, -2)",isCorrect);
 		} catch(Exception e) {
 			fail("Shift did not accept a fully negative range with a zero delta.");
 		}
@@ -300,8 +252,10 @@ public class RangeTest {
 		double delta = 1;
 		try {
 			Range range = Range.shift(r1, delta);
-			Range expectedRange = new Range(-4, -1);
-			assertEquals("Range (-5,-2) properly shifted to Range (-4, -1)", expectedRange, range);
+			double lowerBound = range.getLowerBound();
+			double upperBound = range.getLowerBound() + range.getLength();
+			boolean isCorrect = lowerBound == -4 && upperBound == -1;
+			Assert.assertTrue("Range (-5,-2) properly shifted to Range (-4, -1)",isCorrect);
 		} catch(Exception e) {
 			fail("Shift did not accept a fully negative range with a positive delta.");
 		}
@@ -313,8 +267,10 @@ public class RangeTest {
 		double delta = -1;
 		try {
 			Range range = Range.shift(r1, delta);
-			Range expectedRange = new Range(-3, 1);
-			assertEquals("Range (-2, 2) properly shifted to Range (-3, 1)", expectedRange, range);
+			double lowerBound = range.getLowerBound();
+			double upperBound = range.getLowerBound() + range.getLength();
+			boolean isCorrect = lowerBound == -3 && upperBound == -1;
+			Assert.assertTrue("Range (-2, 2) properly shifted to Range (-3, 1)",isCorrect);
 		} catch(Exception e) {
 			fail("Shift did not accept a range across zero with a negative delta.");
 		}
@@ -326,8 +282,10 @@ public class RangeTest {
 		double delta = 0;
 		try {
 			Range range = Range.shift(r1, delta);
-			Range expectedRange = new Range(-2, 2);
-			assertEquals("Range (-2, 2) properly shifted to Range (-2, 2)", expectedRange, range);
+			double lowerBound = range.getLowerBound();
+			double upperBound = range.getLowerBound() + range.getLength();
+			boolean isCorrect = lowerBound == -2 && upperBound == 2;
+			Assert.assertTrue("Range (-2, 2) properly shifted to Range (-2, 2)",isCorrect);
 		} catch(Exception e) {
 			fail("Shift did not accept a range across zero with a zero delta.");
 		}
@@ -339,8 +297,10 @@ public class RangeTest {
 		double delta = 1;
 		try {
 			Range range = Range.shift(r1, delta);
-			Range expectedRange = new Range(-1, 3);
-			assertEquals("Range (-2, 2) properly shifted to Range (-1, 3)", expectedRange, range);
+			double lowerBound = range.getLowerBound();
+			double upperBound = range.getLowerBound() + range.getLength();
+			boolean isCorrect = lowerBound == -1 && upperBound == 3;
+			Assert.assertTrue("Range (-2, 2) properly shifted to Range (-1, 3)",isCorrect);
 		} catch(Exception e) {
 			fail("Shift did not accept a range across zero with a poitive delta.");
 		}
@@ -352,8 +312,10 @@ public class RangeTest {
 		double delta = -1;
 		try {
 			Range range = Range.shift(r1, delta);
-			Range expectedRange = new Range(1, 4);
-			assertEquals("Range (2, 5) properly shifted to Range (1, 4)", expectedRange, range);
+			double lowerBound = range.getLowerBound();
+			double upperBound = range.getLowerBound() + range.getLength();
+			boolean isCorrect = lowerBound == 1 && upperBound == 4;
+			Assert.assertTrue("Range (2, 5) properly shifted to Range (1, 4)",isCorrect);
 		} catch(Exception e) {
 			fail("Shift did not accept a fully positive range with a negative delta.");
 		}
@@ -365,8 +327,10 @@ public class RangeTest {
 		double delta = 0;
 		try {
 			Range range = Range.shift(r1, delta);
-			Range expectedRange = new Range(2, 5);
-			assertEquals("Range (2, 5) properly shifted to Range (2, 5)", expectedRange, range);
+			double lowerBound = range.getLowerBound();
+			double upperBound = range.getLowerBound() + range.getLength();
+			boolean isCorrect = lowerBound == 2 && upperBound == 5;
+			Assert.assertTrue("Range (2, 5) properly shifted to Range (2, 5)",isCorrect);
 		} catch(Exception e) {
 			fail("Shift did not accept a fully positive range with a zero delta.");
 		}
@@ -378,13 +342,16 @@ public class RangeTest {
 		double delta = 1;
 		try {
 			Range range = Range.shift(r1, delta);
-			Range expectedRange = new Range(3, 6);
-			assertEquals("Range (2, 5) properly shifted to Range (3, 6)", expectedRange, range);
+			double lowerBound = range.getLowerBound();
+			double upperBound = range.getLowerBound() + range.getLength();
+			boolean isCorrect = lowerBound == 3 && upperBound == 6;
+			Assert.assertTrue("Range (2, 5) properly shifted to Range (3, 6)",isCorrect);
 		} catch(Exception e) {
 			fail("Shift did not accept a fully positive range with a positive delta.");
 		}
 	}
 	
+	//boolean intersects(double lower, double upper) Tests
 	@Test
 	public void testIntersects_lowerLessThanThisLower_upperLessThanThisLower() {
 		Range r1 = new Range(-2, 2);
