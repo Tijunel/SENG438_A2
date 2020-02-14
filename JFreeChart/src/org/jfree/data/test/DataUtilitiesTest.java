@@ -251,7 +251,7 @@ public class DataUtilitiesTest {
 
 	//TESTS FOR testCreateNumberArray
 
-	@Test (expected = IllegalArgumentException.class)
+	@Test (expected = InvalidParameterException.class)
 	// Test converting an invalid double array, should throw exception
 	public void testCreateNumberArrayZero(){
 		double[] testArr = null;
