@@ -52,22 +52,28 @@ public class RangeTest {
 	
 	//boolean contains(double value) Tests
 	@Test
-	public void testValueInRange() {
+	public void testContainsValueInRange() {
 		Range range = new Range(0, 10);
 		boolean valueIsInRange = range.contains(5);
 		Assert.assertTrue(valueIsInRange);
 	}
 	@Test
-	public void testValueLessThanLowerBound() {
+	public void testContainsValueLessThanLowerBound() {
 		Range range = new Range(0, 10);
 		boolean valueIsInRange = range.contains(-1);
 		Assert.assertFalse(valueIsInRange);
 	}
 	@Test
-	public void testValueGreaterThanUpperBound() {
+	public void testContainsValueGreaterThanUpperBound() {
 		Range range = new Range(0, 10);
 		boolean valueIsInRange = range.contains(15);
 		Assert.assertFalse(valueIsInRange);
+	}
+	@Test
+	public void testContainsValueEqualToUpperAndLowerBound() {
+		Range range = new Range(0, 0);
+		boolean valueIsInRange = range.contains(0);
+		Assert.assertTrue(valueIsInRange);
 	}
 	
 	//Range combine(Range range1, Range range2) Tests
@@ -113,16 +119,24 @@ public class RangeTest {
 	public void testCombineRangeOneLessThanRangeTwo() { //Equivalent to Range Two Greater Than Range One
 		Range r1 = new Range(1, 2);
 		Range r2 = new Range(3, 4);
-		exception.expect(IllegalArgumentException.class);
-		Range.combine(r1, r2);
+		try {
+			Range range = Range.combine(r1, r2);
+			Assert.assertNull(range);
+		} catch(IllegalArgumentException e) {
+			fail("Combine did not accept Range 1 greater than Range 2, and threw an IllegalArgumentException");
+		}
 	}
 	
 	@Test
 	public void testCombineRangeOneGreaterThanRangeTwo() { //Equivalent to Range Two Less Than Range One
 		Range r1 = new Range(3, 4);
 		Range r2 = new Range(1, 2);
-		exception.expect(IllegalArgumentException.class);
-		Range.combine(r1, r2);
+		try {
+			Range range = Range.combine(r1, r2);
+			Assert.assertNull(range);
+		} catch(IllegalArgumentException e) {
+			fail("Combine did not accept Range 2 greater than Range 1, and threw an IllegalArgumentException");
+		}
 	}
 	
 	@Test

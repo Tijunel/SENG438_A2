@@ -276,11 +276,6 @@ public class DataUtilitiesTest {
 		doubleArr[2] = 3.0;
 		doubleArr[3] = 4.0;
 
-//		// Debugging print statements
-//		for(Number n: resultArr) {
-//			System.out.println(n);
-//		}
-
 		Number[] resultArr = DataUtilities.createNumberArray(doubleArr);
 		assertArrayEquals(expectedArr, resultArr);
 	}
