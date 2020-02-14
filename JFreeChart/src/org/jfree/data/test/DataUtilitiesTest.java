@@ -304,14 +304,22 @@ public class DataUtilitiesTest {
 		double [][] doubleArr = new double [0][0];
 
 		Number [][] resultArr = DataUtilities.createNumberArray2D(doubleArr);
-
-		assertArrayEquals("2D array differs from expected for empty array. ",expectedArr[0], resultArr[0]);
+		
+		try {
+			assertArrayEquals("2D array differs from expected for empty array. ",expectedArr[0], resultArr[0]);
+		} catch (Exception e) {
+			fail ("Exception thrown. ");
+		}
 	}
 
 	@Test (expected = InvalidParameterException.class)
 	public void testCreateNumberArray2D_invalidInput() throws InvalidParameterException{
+		try {
 			DataUtilities.createNumberArray2D(null);
-			fail("Exception not thrown. ");
+		} catch (Exception e) {
+			fail("Wrong exception thrown. ");
+		}
+		
 	}
 
 	@Test
