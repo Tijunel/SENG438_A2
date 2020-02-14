@@ -280,7 +280,10 @@ public class DataUtilitiesTest {
 		assertArrayEquals(expectedArr, resultArr);
 	}
 
+	//TESTS FOR testCreateNumberArray2D
+	
 	@Test
+	// Test converting a populated double 2D array
 	public void testCreateNumberArray2D_Populated2DArray() {
 		Number [][] expectedArr = new Number [2][3];
 		double [][] doubleArr = new double [2][3];
@@ -299,6 +302,7 @@ public class DataUtilitiesTest {
 	}
 
 	@Test
+	// Test converting an empty double 2D array
 	public void testCreateNumberArray2D_empty2DArray() {
 		Number [][] expectedArr = new Number [0][0];
 		double [][] doubleArr = new double [0][0];
@@ -309,18 +313,21 @@ public class DataUtilitiesTest {
 	}
 
 	@Test (expected = InvalidParameterException.class)
+	// Test converting a null array, should throw an exception
 	public void testCreateNumberArray2D_invalidInput() throws InvalidParameterException{
 			DataUtilities.createNumberArray2D(null);
 			fail("Exception not thrown. ");
 	}
 
 	@Test
+	// Test to see if all keyedValues cumulative percentages are valid
 	public void testGetCumulativePercentages_validKeyedValue() {
 		for (int i = 0; i < 3; i++)
 			assertEquals("Keyedvalues differs from expected at index " + i + ". ", cumulative.getValue(i), keyedValues.getValue(i));
 	}
 
 	@Test (expected = InvalidParameterException.class)
+	// Tests with null, expects to throw an exception
 	public void testGetCumulativePercentages_invalidInput() throws InvalidParameterException{
 			DataUtilities.getCumulativePercentages(null);
 			fail("Exception not thrown. ");
