@@ -294,7 +294,8 @@ public class DataUtilitiesTest {
 		Number [][] resultArr = DataUtilities.createNumberArray2D(doubleArr);
 
 		for (int i = 0; i < 2; i++)
-			assertArrayEquals(expectedArr[i], resultArr[i]);
+			assertArrayEquals("2D array differs from expected at index " + i + ". ",expectedArr[i], resultArr[i]);
+		
 	}
 
 	@Test
@@ -304,7 +305,7 @@ public class DataUtilitiesTest {
 
 		Number [][] resultArr = DataUtilities.createNumberArray2D(doubleArr);
 
-		assertArrayEquals(expectedArr[0], resultArr[0]);
+		assertArrayEquals("2D array differs from expected for empty array. ",expectedArr[0], resultArr[0]);
 	}
 
 	@Test (expected = InvalidParameterException.class)
@@ -316,7 +317,7 @@ public class DataUtilitiesTest {
 	@Test
 	public void testGetCumulativePercentages_validKeyedValue() {
 		for (int i = 0; i < 3; i++)
-			assertEquals(cumulative.getValue(i), keyedValues.getValue(i));
+			assertEquals("Keyedvalues differs from expected at index " + i + ". ", cumulative.getValue(i), keyedValues.getValue(i));
 	}
 
 	@Test (expected = InvalidParameterException.class)
